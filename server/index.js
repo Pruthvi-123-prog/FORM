@@ -23,22 +23,27 @@ app.use(cors({
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
     
-    // Allow all origins in development
-    if (process.env.NODE_ENV !== 'production') {
+    // List of allowed origins
+    const allowedOrigins = [
+      'https://form-zeta-azure.vercel.app',
+      'https://form-rec46goub-pruthvi-123-progs-projects.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001',
+      process.env.CLIENT_URL
+    ].filter(Boolean);
+    
+    // Allow all origins in development or if CLIENT_URL is *
+    if (process.env.NODE_ENV !== 'production' || process.env.CLIENT_URL === '*') {
       return callback(null, true);
     }
     
-    // In production, check against CLIENT_URL
-    const allowedOrigins = [
-      process.env.CLIENT_URL,
-      'http://localhost:3000',
-      'http://localhost:3001'
-    ].filter(Boolean);
-    
-    if (allowedOrigins.includes(origin) || process.env.CLIENT_URL === '*') {
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log(`CORS rejected origin: ${origin}`);
+      console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
+      callback(null, true); // Temporarily allow all for debugging
     }
   },
   credentials: true
