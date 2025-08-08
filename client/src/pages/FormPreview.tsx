@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Share2, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -13,13 +13,7 @@ const FormPreview: React.FC = () => {
   const [form, setForm] = useState<Form | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (id) {
-      loadForm();
-    }
-  }, [id]);
-
-  const loadForm = async () => {
+  const loadForm = useCallback(async () => {
     try {
       setLoading(true);
       const response = await formAPI.getFormById(id!);
@@ -31,7 +25,13 @@ const FormPreview: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  useEffect(() => {
+    if (id) {
+      loadForm();
+    }
+  }, [id, loadForm]);
 
   const handleCopyLink = async () => {
     if (!form) return;

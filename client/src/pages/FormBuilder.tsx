@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Save, Eye, ArrowLeft, Plus, Image as ImageIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Form, Question } from '../types';
 import { formAPI } from '../utils/api';
-import { generateId, createNewQuestion } from '../utils/helpers';
+import { createNewQuestion } from '../utils/helpers';
 import QuestionEditor from '../components/FormBuilder/QuestionEditor';
 
 const FormBuilder: React.FC = () => {
@@ -28,13 +28,7 @@ const FormBuilder: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      loadForm();
-    }
-  }, [id]);
-
-  const loadForm = async () => {
+  const loadForm = useCallback(async () => {
     try {
       setLoading(true);
       const response = await formAPI.getFormById(id!);
@@ -46,7 +40,13 @@ const FormBuilder: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  useEffect(() => {
+    if (id) {
+      loadForm();
+    }
+  }, [id, loadForm]);
 
   const handleSave = async () => {
     try {
@@ -104,10 +104,6 @@ const FormBuilder: React.FC = () => {
       ...prev,
       questions: prev.questions.filter(q => q.id !== questionId)
     }));
-  };
-
-  const handleHeaderImageUpload = (url: string) => {
-    setForm(prev => ({ ...prev, headerImage: url }));
   };
 
   if (loading) {

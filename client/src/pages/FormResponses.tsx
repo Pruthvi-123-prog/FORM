@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, Eye, Trash2, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -15,13 +15,7 @@ const FormResponses: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState<'responses' | 'analytics'>('responses');
 
-  useEffect(() => {
-    if (id) {
-      loadData();
-    }
-  }, [id]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -32,7 +26,7 @@ const FormResponses: React.FC = () => {
       // Load responses
       const responsesResponse = await formAPI.getFormResponses(id!);
       setResponses(responsesResponse.data);
-      
+
       // Load analytics
       const analyticsResponse = await responseAPI.getFormAnalytics(id!);
       setAnalytics(analyticsResponse.data);
@@ -44,7 +38,13 @@ const FormResponses: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  useEffect(() => {
+    if (id) {
+      loadData();
+    }
+  }, [id, loadData]);
 
   const handleDeleteResponse = async (responseId: string) => {
     if (!window.confirm('Are you sure you want to delete this response?')) {
@@ -373,7 +373,7 @@ const FormResponses: React.FC = () => {
               </div>
             )}
 
-            {!analytics || analytics.totalResponses === 0 && (
+            {(!analytics || analytics.totalResponses === 0) && (
               <div className="text-center py-12">
                 <BarChart3 className="mx-auto h-24 w-24 text-gray-400 mb-4" />
                 <h3 className="text-xl font-medium text-gray-900 mb-2">No analytics data</h3>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Form, Answer } from '../types';
@@ -9,7 +9,6 @@ import FormRenderer from '../components/Form/FormRenderer';
 
 const FormFill: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const [form, setForm] = useState<Form | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -20,13 +19,7 @@ const FormFill: React.FC = () => {
     thankYouMessage: string;
   } | null>(null);
 
-  useEffect(() => {
-    if (slug) {
-      loadForm();
-    }
-  }, [slug]);
-
-  const loadForm = async () => {
+  const loadForm = useCallback(async () => {
     try {
       setLoading(true);
       const response = await formAPI.getFormBySlug(slug!);
@@ -41,7 +34,13 @@ const FormFill: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug]);
+
+  useEffect(() => {
+    if (slug) {
+      loadForm();
+    }
+  }, [slug, loadForm]);
 
   const handleSubmit = async (answers: Answer[]) => {
     if (!form || submitting) return;
