@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { Form, Response, Answer } from '../types';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 
+                   process.env.REACT_APP_API_URL || 
+                   (process.env.NODE_ENV === 'production' ? 
+                     'https://form-builder-backend-scw7.onrender.com' : 
+                     'http://localhost:5000');
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: `${API_BASE_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },

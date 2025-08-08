@@ -19,7 +19,28 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(morgan('combined'));
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    // Allow all origins in development
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    
+    // In production, check against CLIENT_URL
+    const allowedOrigins = [
+      process.env.CLIENT_URL,
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ].filter(Boolean);
+    
+    if (allowedOrigins.includes(origin) || process.env.CLIENT_URL === '*') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));

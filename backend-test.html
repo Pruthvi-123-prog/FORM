@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Connection Test</title>
+</head>
+<body>
+    <h1>Form Builder Backend Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        const API_URL = 'https://form-builder-backend-scw7.onrender.com';
+        const results = document.getElementById('results');
+        
+        // Test 1: Basic connectivity
+        results.innerHTML += '<h3>Testing Backend Connection...</h3>';
+        
+        fetch(`${API_URL}/api/forms`)
+            .then(response => {
+                results.innerHTML += `<p>✅ Backend responded with status: ${response.status}</p>`;
+                return response.json();
+            })
+            .then(data => {
+                results.innerHTML += `<p>✅ Data received: ${JSON.stringify(data)}</p>`;
+            })
+            .catch(error => {
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+                
+                // Try a simple health check
+                fetch(`${API_URL}/`)
+                    .then(response => {
+                        results.innerHTML += `<p>🔍 Root endpoint status: ${response.status}</p>`;
+                    })
+                    .catch(err => {
+                        results.innerHTML += `<p>❌ Root endpoint also failed: ${err.message}</p>`;
+                        results.innerHTML += `<p>🚨 Backend service may be down or sleeping</p>`;
+                    });
+            });
+    </script>
+</body>
+</html>
