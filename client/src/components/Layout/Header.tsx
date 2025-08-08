@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FormInput, Home, BarChart3 } from 'lucide-react';
+import { FormInput, Home } from 'lucide-react';
 
 const Header: React.FC = () => {
   const location = useLocation();

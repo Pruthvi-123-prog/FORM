@@ -31,7 +31,7 @@ const CategorizeQuestion: React.FC<CategorizeQuestionProps> = ({
   const handleDragEnd = (result: any) => {
     if (isPreview) return;
     
-    const { destination, source, draggableId } = result;
+    const { destination, source } = result;
 
     if (!destination) return;
 
