@@ -6,7 +6,7 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "build"
       }
     }
   ],
@@ -19,7 +19,8 @@
       "dest": "/index.html"
     }
   ],
+  "buildCommand": "npm install --legacy-peer-deps && npm run build",
   "env": {
-    "VITE_API_BASE_URL": "https://your-railway-backend-url.railway.app"
+    "REACT_APP_API_BASE_URL": "https://form-builder-backend-scw7.onrender.com"
   }
 }
