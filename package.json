@@ -1,0 +1,26 @@
+{
+  "name": "form-builder-app",
+  "version": "1.0.0",
+  "description": "A custom form builder UI with support for custom question types",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-deps": "npm install && cd server && npm install && cd ../client && npm install",
+    "heroku-postbuild": "npm run install-deps && npm run build"
+  },
+  "keywords": [
+    "form-builder",
+    "react",
+    "express",
+    "mongodb",
+    "typeform-clone"
+  ],
+  "author": "PRUTHVI SUVARNA K.M",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
